@@ -12,6 +12,7 @@ type MessageOps {
 type Mutation {
   message(id: ID!, wait: Int!): String!
   Nested: MessageOps
+  Sequential: MessageOps
 }
 `
 
@@ -23,13 +24,24 @@ const msg = (id, wait) => new Promise(resolve => {
   }, wait)
 })
 
+class Sequential {
+  constructor() {
+    this.promise = Promise.resolve()
+  }
+
+  message({id, wait}) {
+    this.promise = this.promise.then(() => msg(id, wait))
+    return this.promise
+  }
+}
+
 const resolvers = {
   Mutation: {
     message: (_, {id, wait}) => msg(id, wait),
     Nested: () => ({
       message: ({id, wait}) => msg(id, wait)
-    })
-
+    }),
+    Sequential: () => new Sequential(),
   }
 }
 
