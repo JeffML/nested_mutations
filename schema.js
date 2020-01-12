@@ -24,14 +24,36 @@ const msg = (id, wait) => new Promise(resolve => {
   }, wait)
 })
 
-class Sequential {
-  constructor() {
-    this.promise = Promise.resolve()
+class Sequencer {
+  constructor(target, options) {
+    let { promise = Promise.resolve() } = options || {};
+    this.promise = promise;
+
+    return this.wrap(target);
   }
 
-  message({id, wait}) {
-    this.promise = this.promise.then(() => msg(id, wait))
-    return this.promise
+  wrap(val) {
+    if ((typeof val === 'object' || typeof val === 'function') && val !== null) {
+      return new Proxy(val, this);
+    }
+
+    return val;
+  }
+
+  get(target, prop, receiver) {
+    const val = target[prop];
+
+    if (typeof val === 'function') {
+      return (...args) => {
+        this.promise = this.promise.then(async () => {
+          const ret = await val(...args);
+          return this.wrap(ret);
+        });
+        return this.promise;
+      }
+    } else {
+      return this.wrap(val);
+    }
   }
 }
 
@@ -41,7 +63,9 @@ const resolvers = {
     Nested: () => ({
       message: ({id, wait}) => msg(id, wait)
     }),
-    Sequential: () => new Sequential(),
+    Sequential: () => new Sequencer({
+      message: ({id, wait}) => msg(id, wait)
+    }),
   }
 }
 
