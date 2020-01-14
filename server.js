@@ -1,17 +1,12 @@
 import express from 'express';
-import {graphqlExpress, graphiqlExpress} from 'graphql-server-express';
-import bodyParser from 'body-parser';
+import {ApolloServer} from 'apollo-server-express';
 
-import {schema} from './schema';
-
-import {execute, subscribe} from "graphql";
-import {createServer} from "http";
+import {typeDefs, resolvers} from './schema';
 
 const PORT = 4000;
-const server = express();
+const server = new ApolloServer({typeDefs, resolvers});
 
-server.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
+const app = express();
+server.applyMiddleware({app})
 
-server.use('/graphiql', graphiqlExpress({endpointURL: '/graphql'}));
-
-server.listen(PORT, () => console.log(`GraphQL Server is now running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`));
