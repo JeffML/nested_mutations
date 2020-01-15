@@ -12,6 +12,7 @@ type MessageOps {
 type Mutation {
   message(id: ID!, wait: Int!): String!
   Nested: MessageOps
+  Sequencer: MessageOps
   Sequential: MessageOps
 }
 `
@@ -23,6 +24,18 @@ const msg = (id, wait) => new Promise(resolve => {
     resolve(message);
   }, wait)
 })
+
+// original Sequencer (Mathew Lanigan)
+class Sequential {
+  constructor() {
+    this.promise = Promise.resolve()
+  }
+
+  message({id, wait}) {
+    this.promise = this.promise.then(() => msg(id, wait))
+    return this.promise
+  }
+}
 
 class Sequencer {
   constructor(target, options) {
@@ -63,9 +76,10 @@ const resolvers = {
     Nested: () => ({
       message: ({id, wait}) => msg(id, wait)
     }),
-    Sequential: () => new Sequencer({
+    Sequencer: () => new Sequencer({
       message: ({id, wait}) => msg(id, wait)
     }),
+    Sequential: () => new Sequential(),
   }
 }
 
