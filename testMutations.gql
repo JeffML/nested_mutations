@@ -1,0 +1,104 @@
+# These mutations were used for testing
+# Write your query or mutation here
+mutation nested2 {
+  Nested {
+    message1: message(id: 1, wait: 3000)
+  }
+  Nested {
+    message2: message(id: 2, wait: 1000)
+  }
+  Nested {
+    message3: message(id: 3, wait: 500)
+  }
+  Nested {
+    message4: message(id: 4, wait: 100)
+  }
+}
+
+mutation sequencer {
+  Sequencer {
+    message1: message(id: 1, wait: 3000)
+    message2: message(id: 2, wait: 1000)
+    message3: message(id: 3, wait: 500)
+    message4: message(id: 4, wait: 100)
+  }
+}
+
+mutation sequencer2 {
+  Sequencer {
+    message1: message(id: 1, wait: 3000)
+  }
+  Sequencer {
+    message2: message(id: 2, wait: 1000)
+  }
+  Sequencer {
+    message3: message(id: 3, wait: 500)
+  }
+  Sequencer {
+    message4: message(id: 4, wait: 100)
+  }
+}
+
+mutation sequential {
+  Sequential {
+    message1: message(id: 1, wait: 3000)
+    message2: message(id: 2, wait: 1000)
+    message3: message(id: 3, wait: 500)
+    message4: message(id: 4, wait: 100)
+  }
+}
+
+mutation sequential2 {
+  Sequential {
+    message1: message(id: 1, wait: 3000)
+  }
+  Sequential {
+    message2: message(id: 2, wait: 1000)
+  }
+  Sequential {
+    message3: message(id: 3, wait: 500)
+  }
+  Sequential {
+    message4: message(id: 4, wait: 100)
+  }
+}
+
+mutation sequential3 {
+  Sequential {
+    message1: message(id: 1, wait: 3000)
+    message1a: message(id: 11, wait: 2500)
+  }
+  Sequential {
+    message2: message(id: 2, wait: 1000)
+    message2a: message(id: 22, wait: 750)
+  }
+  Sequential {
+    message3: message(id: 3, wait: 500)
+    message3a: message(id: 33, wait: 250)
+  }
+  Sequential {
+    message4: message(id: 4, wait: 100)
+    message4a: message(id: 44, wait: 50)
+  }
+}
+
+# additionally, this set of mutations was created to run concurrently 
+# with sequential3, above
+mutation sequential99 {
+  Sequential {
+    message11: message(id: 91, wait: 3000)
+    message11a: message(id: 911, wait: 2500)
+  }
+  Sequential {
+    message22: message(id: 92, wait: 1000)
+    message22a: message(id: 922, wait: 750)
+  }
+  Sequential {
+    message33: message(id: 93, wait: 500)
+    message33a: message(id: 933, wait: 250)
+  }
+  Sequential {
+    message44: message(id: 94, wait: 100)
+    message44a: message(id: 944, wait: 50)
+  }
+}

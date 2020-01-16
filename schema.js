@@ -25,7 +25,8 @@ const msg = (id, wait) => new Promise(resolve => {
   }, wait)
 })
 
-// original Sequencer (Mathew Lanigan)
+// The original mutation sequencer by Mathew Lanigan
+// This is the one used in the freeCodeCamp article
 class Sequential {
   constructor() {
     this.promise = Promise.resolve()
@@ -37,6 +38,15 @@ class Sequential {
   }
 }
 
+/* 
+The following is an attempt to create a generalized sequencer:
+"The main benefit of the Sequencer over my original Sequential implementation 
+is that Sequencer is a generalization that can be applied to any non-root 
+resolver object, and doesn't require the underlying object to be aware 
+of the promise at all." -- Mathew Lanigan
+
+This was not covered in the article.
+ */  
 class Sequencer {
   constructor(target, options) {
     let { promise = Promise.resolve() } = options || {};
